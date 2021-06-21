@@ -10,7 +10,7 @@ public class Main {
         Score score = new Score();
         AI ai = new AI(score);
         GameCore gameCore = new GameCore(stack, scanner, score, ai);
-        UI ui = new UI(gameCore);
+        UI ui = new UI(gameCore, score);
         while (!gameCore.isEnd()) {
             ui.startPlayerTurn(stack.getPlayerCards(),
                     stack.getEnemyCards());

@@ -5,9 +5,11 @@ import java.util.List;
 public class UI {
 
     private GameCore gameCore;
+    private Score score;
 
-    public UI(GameCore gameCore) {
+    public UI(GameCore gameCore, Score score) {
         this.gameCore = gameCore;
+        this.score = score;
         System.out.println(
                 "// ИГРА НАЧАЛАСЬ! //"
         );
@@ -29,8 +31,11 @@ public class UI {
         System.out.println(
                 "Выберите карту"
         );
-        playerCard = gameCore.requestPlayerCard();
         enemyCard = gameCore.requestEnemyCard(GameCore.State.DEFENCE);
+        playerCard = gameCore.requestPlayerCard(() -> System.out.println(
+                "Вы не имеете на руках данной карты \n" +
+                        "Повторите выбор"
+        ));
         System.out.println(
                 "// ВЫ СДЕЛАЛИ ВЫБОР: " + playerCard + " // \n" +
                         "// ВЫБОР ПРОТИВНИКА: " + enemyCard + " //"
@@ -61,8 +66,11 @@ public class UI {
         System.out.println(
                 "Выберите карту"
         );
-        playerCard = gameCore.requestPlayerCard();
         enemyCard = gameCore.requestEnemyCard(GameCore.State.ATTACK);
+        playerCard = gameCore.requestPlayerCard(() -> System.out.println(
+                "Вы не имеете на руках данной карты \n" +
+                        "Повторите выбор"
+        ));
         System.out.println(
                 "// ВЫ СДЕЛАЛИ ВЫБОР: " + playerCard + " // \n" +
                         "// ВЫБОР ПРОТИВНИКА: " + enemyCard + " //"
@@ -78,6 +86,7 @@ public class UI {
     }
 
     public void endGame() {
+        showResultOfGame();
         GameCore.Winner winner = gameCore.chooseWinner();
         if (winner == GameCore.Winner.PLAYER)
             System.out.println("Победа игрока!");
@@ -86,6 +95,13 @@ public class UI {
         else
             System.out.println("Ничья!");
         System.out.println("// КОНЕЦ ИГРЫ //");
+    }
+
+    private void showResultOfGame() {
+        System.out.println(
+                "Очков у игрока: " + score.getPlayerScore() +
+                        "\nОчков у противника: " + score.getEnemyScore()
+        );
     }
 
     private void showCards(List<Integer> cards) {

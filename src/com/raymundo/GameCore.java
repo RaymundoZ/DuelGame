@@ -6,6 +6,10 @@ import static java.lang.Math.abs;
 
 public class GameCore {
 
+    public interface OnErrorListener {
+        void printError();
+    }
+
     public enum State {
         ATTACK,
         DEFENCE
@@ -29,13 +33,10 @@ public class GameCore {
         this.ai = ai;
     }
 
-    public int requestPlayerCard() {
-          int card = scanner.nextInt();
-        while(!stack.getPlayerCards().contains(card)) {
-            System.out.println(
-                    "Вы не имеете на руках данной карты \n" +
-                            "Повторите выбор"
-            );
+    public int requestPlayerCard(OnErrorListener onErrorListener) {
+        int card = scanner.nextInt();
+        while (!stack.getPlayerCards().contains(card)) {
+            onErrorListener.printError();
             card = scanner.nextInt();
         }
         stack.getPlayerCards().remove((Integer) card);
@@ -54,22 +55,19 @@ public class GameCore {
 
     public int calculateResult(State state, int playerCard, int enemyCard) {
         int result = playerCard - enemyCard;
-        if(state == State.ATTACK) {
-            if(result < 0) {
+        if (state == State.ATTACK) {
+            if (result < 0) {
                 score.addEnemyScore(0);
                 return 0;
-            }
-            else {
+            } else {
                 score.addEnemyScore(result);
                 return result;
             }
-        }
-        else {
-            if(result > 0) {
+        } else {
+            if (result > 0) {
                 score.addPlayerScore(0);
                 return 0;
-            }
-            else {
+            } else {
                 score.addPlayerScore(abs(result));
                 return abs(result);
             }
@@ -79,16 +77,16 @@ public class GameCore {
     public Winner chooseWinner() {
         int playerScore = score.getPlayerScore();
         int enemyScore = score.getEnemyScore();
-        if(playerScore > enemyScore)
+        if (playerScore > enemyScore)
             return Winner.ENEMY;
-        else if(playerScore < enemyScore)
+        else if (playerScore < enemyScore)
             return Winner.PLAYER;
         else
             return Winner.DRAW;
     }
 
     public boolean isEnd() {
-        if(stack.getPlayerCards().isEmpty() && stack.getEnemyCards().isEmpty())
+        if (stack.getPlayerCards().isEmpty() && stack.getEnemyCards().isEmpty())
             return true;
         else
             return false;
